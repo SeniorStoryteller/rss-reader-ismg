@@ -16,12 +16,12 @@ export function ArticleCard({ item }: ArticleCardProps) {
   const relativeDate =
     item.timestamp > 0
       ? format(new Date(item.timestamp), 'EEE yyyy-MM-dd')
-      : 'Unknown date';
+      : 'Recent';
 
   const fullDate =
     item.timestamp > 0
       ? new Date(item.timestamp).toUTCString()
-      : 'Unknown date';
+      : 'Publication date not provided by feed';
 
   const excerpt = (() => {
     if (item.description.length <= 200) return item.description;
