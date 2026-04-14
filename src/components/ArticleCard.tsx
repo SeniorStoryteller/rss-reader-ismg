@@ -56,10 +56,12 @@ export function ArticleCard({ item }: ArticleCardProps) {
           )}
         </a>
       </div>
-      <div className="flex flex-1 flex-col p-5">
-        <div className="mb-2 flex items-center gap-2">
+      {item.imageUrl && (
+        <div className="border-b border-gray-100 px-5 py-2 dark:border-gray-700">
           <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{item.source}</span>
         </div>
+      )}
+      <div className="flex flex-1 flex-col p-5">
         <h2 className="mb-2 text-lg font-semibold leading-snug text-gray-900 dark:text-gray-100">
           <a
             href={item.link}

@@ -29,9 +29,20 @@ export function parseDate(isoDate?: string, pubDate?: string): number {
   }
 
   if (pubDate) {
+    const cleaned = replaceTimezoneAbbreviations(pubDate);
+    // Try ±HH:mm offset format (e.g. -04:00)
     try {
-      const cleaned = replaceTimezoneAbbreviations(pubDate);
       const d = parse(cleaned, 'EEE, dd MMM yyyy HH:mm:ss xx', new Date());
+      if (!isNaN(d.getTime())) return d.getTime();
+    } catch {}
+    // Try ±HHmm offset format (e.g. -0400) — used by ISMG and many other feeds
+    try {
+      const d = parse(cleaned, 'EEE, dd MMM yyyy HH:mm:ss x', new Date());
+      if (!isNaN(d.getTime())) return d.getTime();
+    } catch {}
+    // Native Date constructor as final fallback — handles most RFC 822 variants
+    try {
+      const d = new Date(pubDate);
       if (!isNaN(d.getTime())) return d.getTime();
     } catch {}
   }
