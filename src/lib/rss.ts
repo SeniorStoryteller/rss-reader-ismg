@@ -97,7 +97,20 @@ export async function fetchAllFeeds(
     }
   });
 
-  items.sort((a, b) => b.timestamp - a.timestamp);
+  // Dedup by normalized title. Cross-posting networks like ISMG publish the
+  // same article across multiple sites with different URLs (so guid-based
+  // dedup doesn't catch them). The item from whichever feed was fetched
+  // first wins — its source/category is what shows on the card.
+  const seen = new Set<string>();
+  const deduped: FeedItem[] = [];
+  for (const item of items) {
+    const key = item.title.trim().toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(item);
+  }
 
-  return { items, failed };
+  deduped.sort((a, b) => b.timestamp - a.timestamp);
+
+  return { items: deduped, failed };
 }

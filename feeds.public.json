@@ -1,7 +1,37 @@
 [
   {
-    "name": "ISMG - Main",
+    "name": "Bank Info Security",
     "url": "https://www.bankinfosecurity.com/rssFeeds.php?type=main",
-    "category": "ISMG"
+    "category": "Bank Info Security"
+  },
+  {
+    "name": "Healthcare Info Security",
+    "url": "https://www.healthcareinfosecurity.com/rssFeeds.php?type=main",
+    "category": "Healthcare Info Security"
+  },
+  {
+    "name": "Gov Info Security",
+    "url": "https://www.govinfosecurity.com/rssFeeds.php?type=main",
+    "category": "Gov Info Security"
+  },
+  {
+    "name": "Data Breach Today",
+    "url": "https://www.databreachtoday.com/rssFeeds.php?type=main",
+    "category": "Data Breach Today"
+  },
+  {
+    "name": "Info Risk Today",
+    "url": "https://www.inforisktoday.com/rssFeeds.php?type=main",
+    "category": "Info Risk Today"
+  },
+  {
+    "name": "Careers Info Security",
+    "url": "https://www.careersinfosecurity.com/rssFeeds.php?type=main",
+    "category": "Careers Info Security"
+  },
+  {
+    "name": "CU Info Security",
+    "url": "https://www.cuinfosecurity.com/rssFeeds.php?type=main",
+    "category": "CU Info Security"
   }
 ]
