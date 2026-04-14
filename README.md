@@ -1,8 +1,8 @@
-# RSS Reader
+# RSS Reader - ISMG
 
-A modern, publicly accessible RSS feed reader built with Next.js and deployed on Vercel. Feed URLs are managed in a local config file and pushed to GitHub. The app is read-only and public — no authentication, no write operations from the public-facing side.
+A modern, publicly accessible RSS feed reader for ISMG content, built with Next.js and deployed on Vercel. Feed URLs are managed in a local config file and pushed to GitHub. The app is read-only and public — no authentication, no write operations from the public-facing side.
 
-**Production URL:** `https://rss-reader-three-omega.vercel.app`
+**Production URL:** *(pending Vercel deployment)*
 
 ## Tech Stack
 
@@ -74,7 +74,7 @@ const SOURCE_LOGOS: Record<string, string> = {
 
 The source name must match `item.source` exactly (visible in small text above each article title).
 
-Currently configured: **Lenny's Podcast**, **Wyndo** (AI Maker logo).
+Currently configured: none (template logos removed — add ISMG-specific logos as needed).
 
 ## Caching
 
