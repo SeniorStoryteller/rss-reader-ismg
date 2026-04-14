@@ -1,7 +1,7 @@
 [
   {
     "name": "ISMG",
-    "url": "https://www.bankinfosecurity.com/rss-feeds",
+    "url": "https://www.bankinfosecurity.com/rssFeeds.php?type=main",
     "category": "ISMG"
   }
 ]
