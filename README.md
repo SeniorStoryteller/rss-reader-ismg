@@ -2,7 +2,7 @@
 
 A modern, publicly accessible RSS feed reader for ISMG content, built with Next.js and deployed on Vercel. Feed URLs are managed in a local config file and pushed to GitHub. The app is read-only and public — no authentication, no write operations from the public-facing side.
 
-**Production URL:** `https://rss-reader-ismg-d5ogo2a1a-seniorstorytellers-projects.vercel.app`
+**Production URL:** `https://rss-reader-ismg.vercel.app`
 
 ## Tech Stack
 

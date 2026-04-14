@@ -8,7 +8,7 @@ This project was scaffolded from the RSS Reader template (SeniorStoryteller/rss-
 
 **Scaffolded from:** `SeniorStoryteller/rss-reader` — all phases 1–7 complete
 **GitHub:** `https://github.com/SeniorStoryteller/rss-reader-ismg`
-**Production URL:** `https://rss-reader-ismg-d5ogo2a1a-seniorstorytellers-projects.vercel.app`
+**Production URL:** `https://rss-reader-ismg.vercel.app`
 
 ### What came with the template
 
@@ -23,11 +23,38 @@ This project was scaffolded from the RSS Reader template (SeniorStoryteller/rss-
 
 - [x] Deploy to Vercel and record production URL
 - [x] Update `og:image` absolute URL in `src/pages/index.tsx`
-- [ ] Update production URL in `README.md`
-- [ ] Clear `feeds.public.json` and add ISMG-relevant feeds
-- [ ] Create `preview` branch
-- [ ] Replace or remove placeholder logos in `public/`
-- [ ] Add ISMG-specific featured image to `public/`
+- [x] Update production URL in `README.md`
+- [x] Clear `feeds.public.json` and add ISMG-relevant feeds
+- [x] Create `preview` branch
+- [x] Remove placeholder logos in `public/`
+- [ ] Add ISMG-specific featured image to `public/` and wire it up as `og:image`
+
+---
+
+## Troubleshooting
+
+### Vercel didn't auto-deploy after a push to `main`
+
+**Symptom:** You push a commit to `main` (either directly with `git push origin HEAD:main` or via the admin UI's Commit & Push button) but the live site at `rss-reader-ismg.vercel.app` still serves the old build. GitHub's commit status API reports `pending` with an empty `statuses` array, and the commit is missing from Vercel's Deployments list.
+
+**Cause:** Vercel's GitHub webhook occasionally fails to fire for a specific push. Other commits in the same session may deploy normally — it's intermittent.
+
+**Fix:**
+1. Go to the Vercel dashboard → project → **Deployments**
+2. Click the **⋯** menu on the most recent successful deployment
+3. Select **Redeploy**
+4. **Uncheck** "Use existing Build Cache"
+5. Click **Redeploy**
+
+Vercel will build from the current `main` HEAD, which includes your missing commit.
+
+**How to check whether Vercel picked up your commit before pushing a fix:**
+```bash
+gh api repos/SeniorStoryteller/rss-reader-ismg/deployments --jq '.[:2] | .[] | "sha: \(.sha[:7]) created: \(.created_at)"'
+```
+If your commit SHA doesn't appear in the first few entries, Vercel missed it.
+
+**Optional:** Push an empty commit (`git commit --allow-empty -m "chore: trigger redeploy" && git push origin HEAD:main`) first — sometimes this kicks the webhook into firing. If that still doesn't work, use the dashboard redeploy.
 
 ---
 
