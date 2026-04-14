@@ -8,7 +8,7 @@ This project was scaffolded from the RSS Reader template (SeniorStoryteller/rss-
 
 **Scaffolded from:** `SeniorStoryteller/rss-reader` — all phases 1–7 complete
 **GitHub:** `https://github.com/SeniorStoryteller/rss-reader-ismg`
-**Production URL:** *(pending Vercel deployment)*
+**Production URL:** `https://rss-reader-ismg-d5ogo2a1a-seniorstorytellers-projects.vercel.app`
 
 ### What came with the template
 
@@ -21,8 +21,8 @@ This project was scaffolded from the RSS Reader template (SeniorStoryteller/rss-
 
 ### What needs to be done before launch
 
-- [ ] Deploy to Vercel and record production URL
-- [ ] Update `og:image` absolute URL in `src/pages/index.tsx`
+- [x] Deploy to Vercel and record production URL
+- [x] Update `og:image` absolute URL in `src/pages/index.tsx`
 - [ ] Update production URL in `README.md`
 - [ ] Clear `feeds.public.json` and add ISMG-relevant feeds
 - [ ] Create `preview` branch
