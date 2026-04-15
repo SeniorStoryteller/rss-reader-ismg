@@ -23,7 +23,7 @@ export function Layout({
     <div className="min-h-screen bg-gray-600 dark:bg-gray-900">
       <header className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
         <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-4">
-          <h1 className="shrink-0 text-xl font-bold text-gray-900 dark:text-gray-100">ISMG Info Security News</h1>
+          <h1 className="shrink-0 text-xl font-bold text-gray-900 dark:text-gray-100">AI in the News</h1>
           <div className="hidden flex-1 sm:block sm:max-w-xs">
             <SearchBar value={searchQuery} onChange={onSearchChange} resultCount={searchResultCount} />
           </div>

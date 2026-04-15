@@ -1,37 +1,52 @@
 [
   {
-    "name": "Bank Info Security",
-    "url": "https://www.bankinfosecurity.com/rssFeeds.php?type=main",
-    "category": "Bank Info Security"
+    "name": "One Useful Thing",
+    "url": "https://www.oneusefulthing.org/feed",
+    "category": "AI Insights"
   },
   {
-    "name": "Healthcare Info Security",
-    "url": "https://www.healthcareinfosecurity.com/rssFeeds.php?type=main",
-    "category": "Healthcare Info Security"
+    "name": "Stratechery",
+    "url": "https://stratechery.com/feed/",
+    "category": "AI Insights"
   },
   {
-    "name": "Gov Info Security",
-    "url": "https://www.govinfosecurity.com/rssFeeds.php?type=main",
-    "category": "Gov Info Security"
+    "name": "Import AI",
+    "url": "https://importai.substack.com/feed",
+    "category": "AI Insights"
   },
   {
-    "name": "Data Breach Today",
-    "url": "https://www.databreachtoday.com/rssFeeds.php?type=main",
-    "category": "Data Breach Today"
+    "name": "AI as Normal Technology",
+    "url": "https://www.normaltech.ai/feed",
+    "category": "AI Insights"
   },
   {
-    "name": "Info Risk Today",
-    "url": "https://www.inforisktoday.com/rssFeeds.php?type=main",
-    "category": "Info Risk Today"
+    "name": "Benedict Evans",
+    "url": "https://www.ben-evans.com/benedictevans/rss.xml",
+    "category": "AI Insights"
   },
   {
-    "name": "Careers Info Security",
-    "url": "https://www.careersinfosecurity.com/rssFeeds.php?type=main",
-    "category": "Careers Info Security"
+    "name": "Simon Willison's Weblog",
+    "url": "https://simonwillison.net/atom/everything/",
+    "category": "AI Insights"
   },
   {
-    "name": "CU Info Security",
-    "url": "https://www.cuinfosecurity.com/rssFeeds.php?type=main",
-    "category": "CU Info Security"
+    "name": "MIT Technology Review",
+    "url": "https://www.technologyreview.com/feed/",
+    "category": "AI Insights"
+  },
+  {
+    "name": "The Pragmatic Engineer",
+    "url": "https://newsletter.pragmaticengineer.com/feed",
+    "category": "AI Insights"
+  },
+  {
+    "name": "VentureBeat AI",
+    "url": "https://venturebeat.com/category/ai/feed/",
+    "category": "AI Insights"
+  },
+  {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "category": "AI Insights"
   }
 ]
