@@ -19,3 +19,9 @@ export function sanitizeHtml(dirty: string): string {
     ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
   });
 }
+
+// Strip all HTML tags and return plain text. Used for description excerpts
+// where the source provides HTML (e.g. Atom <summary type="html"> fields).
+export function stripHtml(dirty: string): string {
+  return purify.sanitize(dirty, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+}

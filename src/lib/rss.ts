@@ -1,5 +1,5 @@
 import Parser from 'rss-parser';
-import { sanitizeHtml } from './sanitize';
+import { sanitizeHtml, stripHtml } from './sanitize';
 import { parseDate } from './dates';
 import type { FeedConfig, FeedItem, FailedFeed } from './types';
 
@@ -18,9 +18,12 @@ const parser = new Parser<Record<string, never>, CustomItem>({
 });
 
 function extractImageUrl(item: Parser.Item & CustomItem): string | undefined {
-  // 1. enclosure (must be an image type)
-  if (item.enclosure?.url && item.enclosure.type?.startsWith('image/')) {
-    if (item.enclosure.url.startsWith('https://')) return item.enclosure.url;
+  // 1. enclosure — accept image/* types; also accept if no type is declared
+  // (some feeds omit the type attribute entirely). Reject non-image types
+  // (e.g. audio/mpeg from podcast feeds) to avoid showing audio files as images.
+  if (item.enclosure?.url?.startsWith('https://')) {
+    const t = item.enclosure.type ?? '';
+    if (!t || t.startsWith('image/')) return item.enclosure.url;
   }
 
   // 2. media:content
@@ -31,9 +34,11 @@ function extractImageUrl(item: Parser.Item & CustomItem): string | undefined {
   const mediaThumbnailUrl = item.mediaThumbnail?.$?.url;
   if (mediaThumbnailUrl?.startsWith('https://')) return mediaThumbnailUrl;
 
-  // 4. first <img src="https://..."> in content HTML
+  // 4. first <img> in content HTML — try src= first, then data-src= (lazy-load pattern)
   const html = item.content || item.summary || '';
-  const match = html.match(/<img[^>]+src=["'](https:\/\/[^"']+)["']/i);
+  const match =
+    html.match(/<img[^>]+src=["'](https:\/\/[^"']+)["']/i) ||
+    html.match(/<img[^>]+data-src=["'](https:\/\/[^"']+)["']/i);
   if (match?.[1]) return match[1];
 
   return undefined;
@@ -65,7 +70,7 @@ async function fetchSingleFeed(
       link: item.link || '',
       timestamp: parseDate(item.isoDate, item.pubDate),
       pubDate: item.isoDate || item.pubDate || '',
-      description: sanitizeHtml(item.contentSnippet || item.content || item.summary || ''),
+      description: item.contentSnippet || stripHtml(item.content || item.summary || ''),
       source: config.name,
       category: config.category,
       guid: item.guid || item.link || '',
