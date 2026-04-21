@@ -100,6 +100,119 @@ The Vercel project (`rss-reader-ismg.vercel.app`) and GitHub repo remain live �
 
 ---
 
+## Session 3 — April 2026
+
+### Changes shipped
+
+| Commit | Description |
+|---|---|
+| `bf43e04` | Repurpose as AI in the News; replace ISMG feeds with 10 AI-focused publications (interim) |
+| `fc88c7c` | Harden image extraction and fix HTML showing in descriptions |
+| `cd3974e` | Replace feeds with 15 AI × cybersecurity sources (final) |
+| `e911e4a` | Rebrand to "AI & Cybersecurity Daily" |
+| `7d74026` | Limit each feed to 10 most-recent items within a 14-day window |
+
+### Key decisions and findings
+
+**Final feed set: 15 sources across 5 categories**
+- **AI Security Research:** Unit 42, Microsoft Security, Google Security, Google Threat Intelligence
+- **Security News:** The Hacker News, Dark Reading, Bleeping Computer, The Record, SecurityWeek, The Register Security
+- **Analysis:** Krebs on Security, Schneier on Security, SANS Internet Storm Center
+- **AI Industry:** OpenAI Blog
+- **Advisories:** CISA Advisories
+
+**Recency filter + per-feed cap**
+- Each feed caps at 10 most-recent items
+- Items older than 14 days are dropped
+- Items without a valid `pubDate` are dropped (for a "what's new" view, undated items can't be trusted as recent)
+- Net effect: ~1,250 fetched items → ~115 kept (pre-dedup) → ~115 displayed (dedup rarely triggers for this mix; security press cross-posts less than ISMG did)
+- Sliding window: `Date.now()` evaluated per request, so old content ages out automatically as new content publishes. No cron, no state.
+
+**Branding**
+- Site header: "AI & Cybersecurity Daily"
+- Page titles, OG metadata, README all updated
+- GitHub repo slug and Vercel project remain `rss-reader-ismg` — not worth the breakage to rename
+
+---
+
+## Session 4 — Planned: Port UX improvements from original RSS Reader
+
+### Context
+
+The sibling project at `/Users/seniorstoryteller/Claude Code Projects/RSS Reader` (GitHub: `SeniorStoryteller/rss-reader`, live: all-things-ai.vercel.app — confirm) has received ~40 UX commits since this project forked from it. The goal of Session 4 (and possibly 5, 6) is to port those improvements here, **one stage at a time**, with commit + push at the end of each stage so the user can review visually on the live site.
+
+**Workflow:** One stage per session. User gives visual feedback, then starts a new session for the next stage.
+
+### Deltas identified (what Original has that this project doesn't)
+
+**Visual / UX:**
+1. Horizontal card layout on desktop (image left 1/3, content right 2/3); stacked full-width image banner on mobile
+2. Vertical flex single-column card list instead of 3-column grid
+3. Topics | Sources tab switcher in sidebar — clickable source names filter the view
+4. Source filtering via `?source=` URL query param (shareable, back-button works)
+5. Smart relative dates on cards: "3h ago", "Yesterday", "2 days ago", then `EEE yyyy-MM-dd`
+6. Orange left-border active indicator in sidebar (replaces filled background)
+7. Darker page background + higher-contrast sidebar text
+8. Category pill at bottom-right of the card content area
+9. `object-contain` on card images (prevents edge cropping)
+10. Mobile-specific card tweaks: smaller headline, hide description on small screens, pin date/pill to bottom
+
+**Infrastructure:**
+11. Swap `jsdom + dompurify` → `sanitize-html` (lighter bundle, same security)
+12. ISR with `revalidate: 300` on feed pages (more reliable than SSR + cache headers)
+13. Shared `NavLists` component (enables Topics/Sources refactor)
+14. Sticky sidebar (`sticky top-6`)
+
+### Behaviors to KEEP (do not revert when porting)
+
+- **14-day recency window** — Original doesn't have this; AI×security moves faster than AI generally, so stale content is a problem
+- **Per-feed cap of 10** — Original uses 20; we're sticking with 10 for density (revisit in Stage 5 if user wants more)
+- **Drop undated items** — Original keeps them; we drop because undated = can't-confirm-fresh
+
+### Stage plan
+
+Each stage is one session. Commit + push + merge preview→main at the end so the live site reflects the change before the next session starts.
+
+**Stage 1 — Quick visual wins (~45 min)**
+- Smart relative dates on cards
+- Orange left-border active indicator in sidebar
+- Darker page background + sidebar contrast
+- `object-contain` for card images
+- Category pill to bottom-right of card
+
+**Stage 2 — Card + page layout (~1 hr)**
+- Horizontal cards on desktop (image left 1/3, content right 2/3)
+- Stacked full-width image banner on mobile
+- Line-clamp titles and descriptions (2–3 lines depending on viewport)
+- Single-column flex list replacing the 3-column grid
+- Responsive typography tweaks
+
+**Stage 3 — Topics | Sources sidebar (~1.5 hrs)**
+- Extract `NavLists` shared component
+- Add Topics | Sources tab switcher to sidebar (and mobile nav)
+- Wire `?source=` URL query param filtering
+- Active-state highlighting on selected source/topic
+- Sticky sidebar (`sticky top-6`)
+
+**Stage 4 — Sanitizer swap + ISR (~45 min)**
+- Remove `jsdom` and `dompurify` deps, add `sanitize-html`
+- Rewrite `src/lib/sanitize.ts`
+- Convert index + category pages to `getStaticProps` with `revalidate: 300`
+- No user-visible change; performance + bundle size improvement
+
+**Stage 5 — Negotiations / optional tweaks**
+- Should per-feed cap rise from 10 → 15 or 20?
+- Any Original behaviors we intentionally skipped that user wants after all?
+- OG image file rename (currently `ISMG Feed Reader - 01.png` — doesn't match new branding)
+
+### How to resume in a new session
+
+1. Open this project in Claude Code Desktop: `/Users/seniorstoryteller/Claude Code Projects/RSS Reader - ISMG`
+2. Prompt: *"Read docs/PHASES.md Session 4 plan, then do Stage N."* (replace N with the next stage)
+3. For Stages 1–4 the code reference is the original project at `/Users/seniorstoryteller/Claude Code Projects/RSS Reader` — read the relevant files there, adapt patterns here, keep the "behaviors to KEEP" intact.
+
+---
+
 ## Future phases / changes
 
 *(Log significant changes here as they happen)*
