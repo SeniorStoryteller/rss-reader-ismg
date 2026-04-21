@@ -16,14 +16,14 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>RSS Reader</title>
-        <meta name="description" content="A modern RSS feed reader" />
-        <meta property="og:title" content="RSS Reader - ISMG" />
-        <meta property="og:description" content="A modern RSS feed reader" />
+        <title>AI &amp; Cybersecurity Daily</title>
+        <meta name="description" content="Daily AI and cybersecurity news and research, aggregated from leading security vendors, researchers, and journalists." />
+        <meta property="og:title" content="AI &amp; Cybersecurity Daily" />
+        <meta property="og:description" content="Daily AI and cybersecurity news and research, aggregated from leading security vendors, researchers, and journalists." />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://rss-reader-ismg-d5ogo2a1a-seniorstorytellers-projects.vercel.app/RSS%20Reader%20-%20Featured%20Image.png" />
+        <meta property="og:image" content="https://rss-reader-ismg.vercel.app/ISMG%20Feed%20Reader%20-%2001.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://rss-reader-ismg-d5ogo2a1a-seniorstorytellers-projects.vercel.app/RSS%20Reader%20-%20Featured%20Image.png" />
+        <meta name="twitter:image" content="https://rss-reader-ismg.vercel.app/ISMG%20Feed%20Reader%20-%2001.png" />
       </Head>
 
       <Layout

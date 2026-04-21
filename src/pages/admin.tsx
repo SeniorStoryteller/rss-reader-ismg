@@ -174,7 +174,7 @@ function AdminUI() {
   return (
     <>
       <Head>
-        <title>Admin — RSS Reader</title>
+        <title>Admin — AI &amp; Cybersecurity Daily</title>
       </Head>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <header className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">

@@ -31,9 +31,9 @@ export default function CategoryPage() {
     return (
       <>
         <Head>
-          <title>Category not found — RSS Reader</title>
+          <title>Category not found — AI &amp; Cybersecurity Daily</title>
           <meta name="description" content="The requested category was not found." />
-          <meta property="og:title" content="Category not found — RSS Reader" />
+          <meta property="og:title" content="Category not found — AI &amp; Cybersecurity Daily" />
           <meta property="og:description" content="The requested category was not found." />
           <meta property="og:type" content="website" />
         </Head>
@@ -64,18 +64,18 @@ export default function CategoryPage() {
   return (
     <>
       <Head>
-        <title>{categoryName ? `${categoryName} — RSS Reader` : 'RSS Reader'}</title>
+        <title>{categoryName ? `${categoryName} — AI & Cybersecurity Daily` : 'AI & Cybersecurity Daily'}</title>
         <meta
           name="description"
           content={
             categoryName
-              ? `RSS feed items in the ${categoryName} category.`
-              : 'A modern RSS feed reader'
+              ? `AI and cybersecurity news in the ${categoryName} category.`
+              : 'Daily AI and cybersecurity news and research.'
           }
         />
         <meta
           property="og:title"
-          content={categoryName ? `${categoryName} — RSS Reader` : 'RSS Reader'}
+          content={categoryName ? `${categoryName} — AI & Cybersecurity Daily` : 'AI & Cybersecurity Daily'}
         />
         <meta
           property="og:description"

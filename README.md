@@ -1,8 +1,8 @@
-# RSS Reader - ISMG
+# AI & Cybersecurity Daily
 
-A modern, publicly accessible RSS feed reader built with Next.js and deployed on Vercel. Feed URLs are managed in a local config file and pushed to GitHub. The app is read-only and public — no authentication, no write operations from the public-facing side.
+A modern, publicly accessible RSS feed reader aggregating daily AI and cybersecurity news and research. Built with Next.js and deployed on Vercel. Feed URLs are managed in a local config file and pushed to GitHub. The app is read-only and public — no authentication, no write operations from the public-facing side.
 
-> **Note:** Originally built for ISMG security publications. Being repurposed for a different feed set — see `docs/PHASES.md` for context on the rate limiting issue that prompted the change.
+> **Project history:** Originally scaffolded as an ISMG-focused reader, repurposed in April 2026 for AI×cybersecurity trend-spotting after ISMG rate-limiting made that configuration unreliable. The Vercel project and GitHub repo still use the `rss-reader-ismg` slug — not worth the breakage to rename. See `docs/PHASES.md` for history.
 
 **Production URL:** `https://rss-reader-ismg.vercel.app`
 
