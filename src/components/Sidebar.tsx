@@ -21,10 +21,10 @@ export function Sidebar({ categories }: SidebarProps) {
             <Link
               href="/"
               aria-current={!currentSlug ? 'page' : undefined}
-              className={`block min-h-[44px] rounded-md px-3 py-2.5 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
+              className={`block min-h-[44px] py-2.5 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
                 !currentSlug
-                  ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
-                  : 'text-gray-100 hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-800'
+                  ? 'border-l-2 border-orange-400 pl-[10px] font-semibold text-white'
+                  : 'rounded-md px-3 font-medium text-gray-100 hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-800'
               }`}
             >
               All Feeds
@@ -38,10 +38,10 @@ export function Sidebar({ categories }: SidebarProps) {
                 <Link
                   href={`/category/${slug}`}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`block min-h-[44px] rounded-md px-3 py-2.5 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
+                  className={`block min-h-[44px] py-2.5 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
                     isActive
-                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
-                      : 'text-gray-100 hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-800'
+                      ? 'border-l-2 border-orange-400 pl-[10px] font-semibold text-white'
+                      : 'rounded-md px-3 font-medium text-gray-100 hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-800'
                   }`}
                 >
                   {cat}

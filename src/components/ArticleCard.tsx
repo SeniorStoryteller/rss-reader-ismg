@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, differenceInHours, differenceInDays } from 'date-fns';
 import { CategoryBadge } from './CategoryBadge';
 import { slugify } from '@/lib/slugify';
 import type { FeedItem } from '@/lib/types';
@@ -12,10 +12,18 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ item }: ArticleCardProps) {
-  const relativeDate =
-    item.timestamp > 0
-      ? format(new Date(item.timestamp), 'EEE yyyy-MM-dd')
-      : 'Recent';
+  const relativeDate = (() => {
+    if (item.timestamp === 0) return 'Recent';
+    const date = new Date(item.timestamp);
+    const now = new Date();
+    const hours = differenceInHours(now, date);
+    const days = differenceInDays(now, date);
+    if (hours < 1) return 'Just now';
+    if (hours < 24) return `${hours}h ago`;
+    if (days === 1) return 'Yesterday';
+    if (days === 2) return '2 days ago';
+    return format(date, 'EEE yyyy-MM-dd');
+  })();
 
   const fullDate =
     item.timestamp > 0
@@ -33,13 +41,15 @@ export function ArticleCard({ item }: ArticleCardProps) {
       <div className="relative">
         <a href={item.link} target="_blank" rel="noopener noreferrer" tabIndex={-1} aria-hidden="true">
           {item.imageUrl ? (
-            <img
-              src={item.imageUrl}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="h-48 w-full rounded-t-lg object-cover"
-            />
+            <div className="h-48 w-full rounded-t-lg bg-black">
+              <img
+                src={item.imageUrl}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full rounded-t-lg object-contain"
+              />
+            </div>
           ) : SOURCE_LOGOS[item.source] ? (
             <div className="flex h-48 w-full items-center justify-center rounded-t-lg bg-black px-4">
               <img
