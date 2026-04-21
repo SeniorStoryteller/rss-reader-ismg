@@ -149,7 +149,6 @@ export function MobileNav({ categories, sources }: MobileNavProps) {
               currentSlug={currentSlug}
               currentSource={currentSource}
               currentTrending={isTrending}
-              showTrending={!currentSlug}
               onLinkClick={close}
               variant="mobile"
             />

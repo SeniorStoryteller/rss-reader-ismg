@@ -54,7 +54,6 @@ export function Sidebar({ categories, sources }: SidebarProps) {
           currentSlug={currentSlug}
           currentSource={currentSource}
           currentTrending={isTrending}
-          showTrending={!currentSlug}
           variant="sidebar"
         />
       </nav>

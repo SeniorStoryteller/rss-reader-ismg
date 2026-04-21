@@ -8,7 +8,6 @@ interface NavListsProps {
   currentSlug: string | undefined;
   currentSource: string | null;
   currentTrending?: boolean;
-  showTrending?: boolean;
   onLinkClick?: () => void;
   variant: 'sidebar' | 'mobile';
 }
@@ -20,7 +19,6 @@ export function NavLists({
   currentSlug,
   currentSource,
   currentTrending = false,
-  showTrending = false,
   onLinkClick,
   variant,
 }: NavListsProps) {
@@ -55,18 +53,16 @@ export function NavLists({
             All Topics
           </Link>
         </li>
-        {showTrending && (
-          <li>
-            <Link
-              href="/?trending=1"
-              onClick={onLinkClick}
-              aria-current={trendingActive ? 'page' : undefined}
-              className={`${topicLinkClass} ${trendingActive ? activeClass : inactiveClass}`}
-            >
-              Trending
-            </Link>
-          </li>
-        )}
+        <li>
+          <Link
+            href="/?trending=1"
+            onClick={onLinkClick}
+            aria-current={trendingActive ? 'page' : undefined}
+            className={`${topicLinkClass} ${trendingActive ? activeClass : inactiveClass}`}
+          >
+            Trending
+          </Link>
+        </li>
         {categories.map((cat) => {
           const slug = slugify(cat);
           const isActive = currentSlug === slug;
