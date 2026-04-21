@@ -17,7 +17,7 @@ const parser = new Parser<Record<string, never>, CustomItem>({
   },
 });
 
-function extractImageUrl(item: Parser.Item & CustomItem): string | undefined {
+function extractImageUrl(item: Parser.Item & CustomItem): string | null {
   // 1. enclosure — accept image/* types; also accept if no type is declared
   // (some feeds omit the type attribute entirely). Reject non-image types
   // (e.g. audio/mpeg from podcast feeds) to avoid showing audio files as images.
@@ -41,7 +41,7 @@ function extractImageUrl(item: Parser.Item & CustomItem): string | undefined {
     html.match(/<img[^>]+data-src=["'](https:\/\/[^"']+)["']/i);
   if (match?.[1]) return match[1];
 
-  return undefined;
+  return null;
 }
 
 function stripXxeVectors(xml: string): string {
@@ -56,6 +56,76 @@ function stripXxeVectors(xml: string): string {
 // out lower-volume ones like Krebs or Schneier.
 const MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
 const MAX_ITEMS_PER_FEED = 10;
+
+const TRENDING_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
+export const TRENDING_THRESHOLD = 3;
+
+// Words too common in security/AI news to be a meaningful cross-source signal.
+// Anything NOT in this list that's capitalized + 4+ chars is a candidate keyword.
+const GENERIC_WORDS = new Set([
+  'With', 'From', 'Into', 'Over', 'About', 'After', 'Before', 'During',
+  'That', 'This', 'These', 'Those', 'Then', 'They', 'When', 'What', 'Where',
+  'Which', 'While', 'Also', 'More', 'Some', 'Such', 'Many', 'Most', 'Both',
+  'Very', 'Just', 'Even', 'Only', 'Well', 'Will', 'Been', 'Being', 'Gets',
+  'Have', 'Here', 'High', 'Know', 'Like', 'Make', 'Need', 'News', 'Says',
+  'Show', 'Take', 'Than', 'Used', 'Uses', 'Using', 'Want', 'Were', 'Your',
+  'Their', 'Them', 'Because', 'Without', 'Against', 'Across', 'Between',
+  // Generic security/AI terms that appear in almost every article
+  'Security', 'Cyber', 'Attack', 'Attacks', 'Threat', 'Threats', 'Actor',
+  'Actors', 'Advanced', 'Persistent', 'Malware', 'Ransomware', 'Phishing',
+  'Vulnerability', 'Vulnerabilities', 'Exploit', 'Exploits', 'Patch', 'Patches',
+  'Breach', 'Breaches', 'Hack', 'Hacked', 'Hackers', 'Hacking', 'Incident',
+  'Data', 'Network', 'Networks', 'System', 'Systems', 'Software', 'Hardware',
+  'Research', 'Researchers', 'Report', 'Reports', 'Analysis', 'Analyst',
+  'Alert', 'Advisory', 'Update', 'Updates', 'Critical', 'Severe',
+  'Risk', 'Risks', 'Issue', 'Issues', 'Supply', 'Chain', 'Zero',
+  'Campaign', 'Operation', 'Activity', 'Group', 'Groups', 'Team', 'Teams',
+  'User', 'Users', 'Account', 'Accounts', 'Access', 'Credential', 'Credentials',
+  'Password', 'Passwords', 'Token', 'Tokens', 'Code', 'Tool', 'Tools',
+  'Cloud', 'Platform', 'Service', 'Services', 'Infrastructure', 'Enterprise',
+  'Government', 'Federal', 'Agency', 'Agencies', 'Organizations', 'Company',
+  'Companies', 'Vendor', 'Vendors', 'Provider', 'Providers', 'Sector',
+  'Week', 'Month', 'Year', 'Today', 'Recent', 'Latest', 'First', 'Second',
+  'Multiple', 'Several', 'Other', 'Large', 'Major', 'Detection', 'Protection',
+  'Intelligence', 'Threat', 'Artificial', 'Machine', 'Learning', 'Model',
+  'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+  'January', 'February', 'March', 'April', 'June', 'July',
+  'August', 'September', 'October', 'November', 'December',
+]);
+
+function extractKeywords(title: string, description: string): string[] {
+  const text = `${title} . ${description}`;
+  const results = new Set<string>();
+
+  for (const m of text.matchAll(/CVE-\d{4}-\d+/g)) {
+    results.add(m[0]);
+  }
+
+  const tokens = text.split(/\s+/).map((t) => t.replace(/[^a-zA-Z0-9-]/g, ''));
+  const isSignificant = (t: string) =>
+    t.length >= 4 && /^[A-Z]/.test(t) && !GENERIC_WORDS.has(t);
+
+  let run: string[] = [];
+
+  const flushRun = () => {
+    if (run.length === 0) return;
+    results.add(run[0]);
+    if (run.length >= 2) results.add(`${run[0]} ${run[1]}`);
+    if (run.length >= 3) results.add(`${run[0]} ${run[1]} ${run[2]}`);
+    run = [];
+  };
+
+  for (const token of tokens) {
+    if (isSignificant(token)) {
+      run.push(token);
+    } else {
+      flushRun();
+    }
+  }
+  flushRun();
+
+  return Array.from(results);
+}
 
 async function fetchSingleFeed(
   config: FeedConfig
@@ -134,6 +204,30 @@ export async function fetchAllFeeds(
   }
 
   deduped.sort((a, b) => b.timestamp - a.timestamp);
+
+  // Build keyword → source-set map from all pre-dedup items within the 7-day
+  // trending window, then score each deduped item by its highest-frequency keyword.
+  const trendingCutoff = Date.now() - TRENDING_WINDOW_MS;
+  const keywordSources = new Map<string, Set<string>>();
+  for (const item of items) {
+    if (item.timestamp < trendingCutoff) continue;
+    for (const kw of extractKeywords(item.title, item.description)) {
+      if (!keywordSources.has(kw)) keywordSources.set(kw, new Set());
+      keywordSources.get(kw)!.add(item.source);
+    }
+  }
+  for (const item of deduped) {
+    if (item.timestamp < trendingCutoff) {
+      item.trendingScore = 0;
+      continue;
+    }
+    let score = 0;
+    for (const kw of extractKeywords(item.title, item.description)) {
+      const count = keywordSources.get(kw)?.size ?? 0;
+      if (count > score) score = count;
+    }
+    item.trendingScore = score;
+  }
 
   return { items: deduped, failed };
 }

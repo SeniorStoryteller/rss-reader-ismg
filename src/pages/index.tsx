@@ -9,7 +9,7 @@ import { Layout } from '@/components/Layout';
 import { filterBySearch } from '@/lib/search';
 import { useFeedData } from '@/hooks/useFeedData';
 import { getFeeds } from '@/lib/feeds';
-import { fetchAllFeeds } from '@/lib/rss';
+import { fetchAllFeeds, TRENDING_THRESHOLD } from '@/lib/rss';
 import type { FeedApiResponse } from '@/lib/types';
 
 export default function Home() {
@@ -18,11 +18,21 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const selectedSource = typeof router.query.source === 'string' ? router.query.source : null;
+  const isTrending = router.query.trending === '1';
 
   const displayedItems = useMemo(() => {
+    if (isTrending) {
+      const trending = items
+        .filter((item) => (item.trendingScore ?? 0) >= TRENDING_THRESHOLD)
+        .sort((a, b) => {
+          const sd = (b.trendingScore ?? 0) - (a.trendingScore ?? 0);
+          return sd !== 0 ? sd : b.timestamp - a.timestamp;
+        });
+      return filterBySearch(trending, searchQuery);
+    }
     const sourceFiltered = selectedSource ? items.filter((item) => item.source === selectedSource) : items;
     return filterBySearch(sourceFiltered, searchQuery);
-  }, [items, searchQuery, selectedSource]);
+  }, [items, searchQuery, selectedSource, isTrending]);
 
   return (
     <>
@@ -64,11 +74,13 @@ export default function Home() {
           </div>
         ) : (
           <p className="py-12 text-center text-gray-500 dark:text-gray-400">
-            {selectedSource
-              ? `No articles from "${selectedSource}".`
-              : searchQuery
-                ? 'No results found.'
-                : 'No feed items available.'}
+            {isTrending
+              ? 'No trending topics right now. Check back later.'
+              : selectedSource
+                ? `No articles from "${selectedSource}".`
+                : searchQuery
+                  ? 'No results found.'
+                  : 'No feed items available.'}
           </p>
         )}
       </Layout>

@@ -13,7 +13,8 @@ export interface FeedItem {
   source: string;
   category: string;
   guid: string;
-  imageUrl?: string;
+  imageUrl: string | null;
+  trendingScore?: number;
 }
 
 export interface FailedFeed {

@@ -12,6 +12,7 @@ export function MobileNav({ categories, sources }: MobileNavProps) {
   const router = useRouter();
   const currentSlug = router.query.slug as string | undefined;
   const currentSource = typeof router.query.source === 'string' ? router.query.source : null;
+  const isTrending = router.query.trending === '1';
   const [activeTab, setActiveTab] = useState<'topics' | 'sources'>(currentSource ? 'sources' : 'topics');
   const navRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -107,7 +108,7 @@ export function MobileNav({ categories, sources }: MobileNavProps) {
                   type="button"
                   onClick={() => {
                     setActiveTab('topics');
-                    if (currentSource) router.push('/');
+                    if (currentSource || isTrending) router.push('/');
                   }}
                   className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
                     activeTab === 'topics'
@@ -147,6 +148,8 @@ export function MobileNav({ categories, sources }: MobileNavProps) {
               sources={sources}
               currentSlug={currentSlug}
               currentSource={currentSource}
+              currentTrending={isTrending}
+              showTrending={!currentSlug}
               onLinkClick={close}
               variant="mobile"
             />

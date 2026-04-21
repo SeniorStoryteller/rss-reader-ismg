@@ -12,6 +12,7 @@ export function Sidebar({ categories, sources }: SidebarProps) {
   const router = useRouter();
   const currentSlug = router.query.slug as string | undefined;
   const currentSource = typeof router.query.source === 'string' ? router.query.source : null;
+  const isTrending = router.query.trending === '1';
   const [activeTab, setActiveTab] = useState<'topics' | 'sources'>(currentSource ? 'sources' : 'topics');
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export function Sidebar({ categories, sources }: SidebarProps) {
             type="button"
             onClick={() => {
               setActiveTab('topics');
-              if (currentSource) router.push('/');
+              if (currentSource || isTrending) router.push('/');
             }}
             className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
               activeTab === 'topics' ? 'font-bold text-white' : 'font-medium text-gray-200 hover:text-white'
@@ -52,6 +53,8 @@ export function Sidebar({ categories, sources }: SidebarProps) {
           sources={sources}
           currentSlug={currentSlug}
           currentSource={currentSource}
+          currentTrending={isTrending}
+          showTrending={!currentSlug}
           variant="sidebar"
         />
       </nav>
