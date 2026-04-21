@@ -64,7 +64,7 @@ const MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
 const MAX_ITEMS_PER_FEED = 10;
 
 const TRENDING_WINDOW_MS = 7 * 24 * 60 * 60 * 1000;
-export const TRENDING_THRESHOLD = 3;
+export const TRENDING_THRESHOLD = 4;
 
 // Words too common in security/AI news to be a meaningful cross-source signal.
 // Anything NOT in this list that's capitalized + 4+ chars is a candidate keyword.
@@ -97,6 +97,13 @@ const GENERIC_WORDS = new Set([
   'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
   'January', 'February', 'March', 'April', 'June', 'July',
   'August', 'September', 'October', 'November', 'December',
+  // Major tech companies — present across every category, not a meaningful trend signal
+  'Google', 'Microsoft', 'Apple', 'Amazon', 'Meta', 'Nvidia', 'Tesla',
+  'GitHub', 'Adobe', 'Oracle', 'Cisco', 'Intel', 'Qualcomm',
+  // AI products/platforms — always present in this feed
+  'OpenAI', 'ChatGPT', 'Gemini', 'Copilot', 'Grok', 'Anthropic', 'Llama',
+  // OS/platforms — appear in nearly every security article
+  'Windows', 'Linux', 'Android', 'Chrome', 'Firefox', 'Safari', 'macOS',
 ]);
 
 function extractKeywords(title: string, description: string): string[] {
