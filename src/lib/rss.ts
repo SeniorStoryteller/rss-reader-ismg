@@ -50,6 +50,13 @@ function stripXxeVectors(xml: string): string {
     .replace(/<!ENTITY[^>]*>/gi, '');
 }
 
+// Per-feed recency window and item cap. AI x security moves fast — anything
+// older than two weeks is stale. Capping per-feed keeps high-volume sources
+// (OpenAI's 942-item archive feed, The Register's 50-item feed) from drowning
+// out lower-volume ones like Krebs or Schneier.
+const MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;
+const MAX_ITEMS_PER_FEED = 10;
+
 async function fetchSingleFeed(
   config: FeedConfig
 ): Promise<FeedItem[]> {
@@ -65,7 +72,9 @@ async function fetchSingleFeed(
     const cleanXml = stripXxeVectors(rawXml);
     const feed = await parser.parseString(cleanXml);
 
-    return (feed.items || []).map((item) => ({
+    const cutoff = Date.now() - MAX_AGE_MS;
+
+    const mapped = (feed.items || []).map((item) => ({
       title: item.title || 'Untitled',
       link: item.link || '',
       timestamp: parseDate(item.isoDate, item.pubDate),
@@ -76,6 +85,15 @@ async function fetchSingleFeed(
       guid: item.guid || item.link || '',
       imageUrl: extractImageUrl(item),
     }));
+
+    // Keep only dated items within the recency window, most recent first,
+    // capped at MAX_ITEMS_PER_FEED. Items with timestamp 0 (feed gave no
+    // date) are dropped — for a "what's new" feed, undated items can't be
+    // trusted to be recent.
+    return mapped
+      .filter((item) => item.timestamp > 0 && item.timestamp >= cutoff)
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .slice(0, MAX_ITEMS_PER_FEED);
   } finally {
     clearTimeout(timeout);
   }
