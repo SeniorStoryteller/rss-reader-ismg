@@ -1,13 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/router';
+import { SearchBar } from './SearchBar';
 import { NavLists } from './NavLists';
 
 interface MobileNavProps {
   categories: string[];
   sources: string[];
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  searchResultCount: number;
 }
 
-export function MobileNav({ categories, sources }: MobileNavProps) {
+export function MobileNav({ categories, sources, searchQuery, onSearchChange, searchResultCount }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const currentSlug = router.query.slug as string | undefined;
@@ -152,6 +156,10 @@ export function MobileNav({ categories, sources }: MobileNavProps) {
               onLinkClick={close}
               variant="mobile"
             />
+
+            <div className="mt-4">
+              <SearchBar value={searchQuery} onChange={onSearchChange} resultCount={searchResultCount} />
+            </div>
           </nav>
         </div>
       )}

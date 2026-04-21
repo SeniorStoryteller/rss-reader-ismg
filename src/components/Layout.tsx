@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
-import { SearchBar } from './SearchBar';
 import { ThemeToggle } from './ThemeToggle';
 
 interface LayoutProps {
@@ -28,16 +27,25 @@ export function Layout({
           <h1 className="shrink-0 text-xl font-bold text-gray-900 dark:text-gray-100">AI &amp; Cybersecurity Daily</h1>
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
-            <MobileNav categories={categories} sources={sources} />
+            <MobileNav
+              categories={categories}
+              sources={sources}
+              searchQuery={searchQuery}
+              onSearchChange={onSearchChange}
+              searchResultCount={searchResultCount}
+            />
           </div>
-        </div>
-        <div className="mx-auto max-w-7xl px-4 pb-3">
-          <SearchBar value={searchQuery} onChange={onSearchChange} resultCount={searchResultCount} />
         </div>
       </header>
 
       <div className="mx-auto flex max-w-7xl gap-8 px-4 py-6">
-        <Sidebar categories={categories} sources={sources} />
+        <Sidebar
+          categories={categories}
+          sources={sources}
+          searchQuery={searchQuery}
+          onSearchChange={onSearchChange}
+          searchResultCount={searchResultCount}
+        />
 
         <main id="main-content" className="min-w-0 flex-1">
           {children}

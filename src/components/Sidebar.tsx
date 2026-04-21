@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { SearchBar } from './SearchBar';
 import { NavLists } from './NavLists';
 
 interface SidebarProps {
   categories: string[];
   sources: string[];
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  searchResultCount: number;
 }
 
-export function Sidebar({ categories, sources }: SidebarProps) {
+export function Sidebar({ categories, sources, searchQuery, onSearchChange, searchResultCount }: SidebarProps) {
   const router = useRouter();
   const currentSlug = router.query.slug as string | undefined;
   const currentSource = typeof router.query.source === 'string' ? router.query.source : null;
@@ -57,6 +61,10 @@ export function Sidebar({ categories, sources }: SidebarProps) {
           variant="sidebar"
         />
       </nav>
+
+      <div className="mt-4">
+        <SearchBar value={searchQuery} onChange={onSearchChange} resultCount={searchResultCount} />
+      </div>
 
       {process.env.NODE_ENV !== 'production' && (
         <div className="mt-6">
