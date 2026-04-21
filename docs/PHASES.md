@@ -214,37 +214,52 @@ Each stage is one session. Commit + push + merge preview→main at the end so th
 
 ---
 
-## Session 5 — Planned: Trending topic
+## Session 5 — Trending topic filter ✅ Complete
+
+### Changes shipped
+
+| Commit | Description |
+|---|---|
+| `5820a59` | Trending filter + fix imageUrl undefined→null serialization crash |
+| `b5f4446` | safeStr() coercion for all rss-parser fields (xmldom object-as-guid render crash) |
+| `0b0423f` | Pre-push hook: npm run build runs automatically before every push |
+| `c732baf` | Raise threshold to 4, block ubiquitous tech/AI names from keyword extraction |
+| `e1a52a5` | Dynamic noise ceiling: auto-suppress keywords appearing in ≥60% of active sources |
+| `c21033f` | Search bar below header; Trending visible on all pages |
+| `a22ff14` | Fix search bar: move to sidebar below nav list (matches original RSS Reader pattern) |
+
+### Key decisions
+
+**Trending implementation:** Topic/keyword clustering (not title match). Proper nouns + CVE patterns extracted from titles + descriptions. Keywords scored by number of distinct sources mentioning them in a 7-day window. `trendingScore` attached to each `FeedItem` at ISR time in `src/lib/rss.ts`.
+
+**Threshold:** 4 sources (user's original instinct — 3 produced 50+ articles).
+
+**Dynamic noise ceiling:** Any keyword appearing in ≥60% of active sources is auto-suppressed as structural noise (catches "Google", "Microsoft", "China" etc. without a manual list). Static blocklist handles generic English and security terms.
+
+**Scope:** Trending appears in Topics list on every page; clicking always navigates to `/?trending=1` (global filter, not per-category).
+
+**Search bar:** Lives in the Sidebar (desktop) and MobileNav panel (mobile), below the nav list — same as the original RSS Reader.
+
+**Pre-existing bugs fixed this session:**
+- `imageUrl?: string` → `imageUrl: string | null` — undefined can't serialize through getStaticProps (was breaking every CI build since Stage 4)
+- `safeStr()` on all rss-parser fields — some feeds return `<guid>` with XML attributes that xmldom parses as a node object; React's key coercion threw on it
+
+---
+
+## Session 6 — Planned: Private daily research report
 
 ### Context
 
-After completing all 5 stages of the Session 4 UX port, the user asked about adding a "Trending" option under "Topics" in the sidebar. Load-time analysis: zero impact if implemented as a client-side filter over already-fetched data.
+User wants a personal intelligence layer — not public — that uses Claude Opus 4.7 to surface hidden patterns across all feed articles that wouldn't be visible from reading individual posts. Examples: source-tier divergence, timing clusters, buried named-entity mentions, weak persistent signals (the "250 hitter becoming a 300 hitter" pattern).
 
-### Proposed implementation: cross-source frequency
+### Open questions before building
 
-**Definition:** An article is "trending" if it appears (by normalized title) in 2 or more sources.
-
-**Why this definition:**
-- Uses data already in memory — no extra fetch
-- Meaningful signal: when multiple security outlets cover the same story, it's genuinely notable
-- Dedup logic in `src/lib/rss.ts` already normalizes titles (trim + lowercase) for cross-post detection — same normalization can be reused to count occurrences before dedup
-
-**Rough implementation sketch:**
-1. Before dedup, build a frequency map: `normalizedTitle → count`
-2. After dedup, attach `trendingScore: number` to each `FeedItem`
-3. In `src/pages/index.tsx` (and category pages), add "Trending" as a pseudo-topic filter: `items.filter(i => i.trendingScore >= 2)`
-4. Add "Trending" as a top entry in the Topics list in `NavLists.tsx` (above the category list, below "All")
-
-**Threshold:** 2+ sources. With 15 feeds, expect ~5–20 trending items on any given day.
-
-**Questions to resolve before building:**
-- Minimum score threshold: 2 sources, or 3?
-- Should trending items be sorted by score descending, or by recency?
-- Should "Trending" appear in category pages too, or only on the home page?
+1. **Delivery:** Private `/report` page (bookmarked URL), email to seniorstoryteller+claude@gmail.com, or both?
+2. **Data depth:** RSS excerpts only (already in feed, zero extra requests) vs. full article text (fetch each URL, richer signal — requires scheduled job + storage)?
 
 ### Prompt for next session
 
-*"Read docs/PHASES.md Session 5 plan. Let's build the Trending topic filter. Before writing any code, confirm the three open questions with me."*
+*"Read docs/PHASES.md Session 6 plan."*
 
 ---
 
