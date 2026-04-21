@@ -32,9 +32,9 @@ export default function Home() {
         <meta property="og:title" content="AI &amp; Cybersecurity Daily" />
         <meta property="og:description" content="Daily AI and cybersecurity news and research, aggregated from leading security vendors, researchers, and journalists." />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://rss-reader-ismg.vercel.app/ISMG%20Feed%20Reader%20-%2001.png" />
+        <meta property="og:image" content="https://rss-reader-ismg.vercel.app/ai-cybersecurity-daily-og.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://rss-reader-ismg.vercel.app/ISMG%20Feed%20Reader%20-%2001.png" />
+        <meta name="twitter:image" content="https://rss-reader-ismg.vercel.app/ai-cybersecurity-daily-og.png" />
       </Head>
 
       <Layout
