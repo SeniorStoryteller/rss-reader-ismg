@@ -1,52 +1,77 @@
 [
   {
-    "name": "One Useful Thing",
-    "url": "https://www.oneusefulthing.org/feed",
-    "category": "AI Insights"
+    "name": "Unit 42",
+    "url": "https://unit42.paloaltonetworks.com/feed/",
+    "category": "AI Security Research"
   },
   {
-    "name": "Stratechery",
-    "url": "https://stratechery.com/feed/",
-    "category": "AI Insights"
+    "name": "Microsoft Security",
+    "url": "https://www.microsoft.com/en-us/security/blog/feed/",
+    "category": "AI Security Research"
   },
   {
-    "name": "Import AI",
-    "url": "https://importai.substack.com/feed",
-    "category": "AI Insights"
+    "name": "Google Security",
+    "url": "https://feeds.feedburner.com/GoogleOnlineSecurityBlog",
+    "category": "AI Security Research"
   },
   {
-    "name": "AI as Normal Technology",
-    "url": "https://www.normaltech.ai/feed",
-    "category": "AI Insights"
+    "name": "Google Threat Intelligence",
+    "url": "https://feeds.feedburner.com/threatintelligence/pvexyqv7v0v",
+    "category": "AI Security Research"
   },
   {
-    "name": "Benedict Evans",
-    "url": "https://www.ben-evans.com/benedictevans/rss.xml",
-    "category": "AI Insights"
+    "name": "The Hacker News",
+    "url": "https://feeds.feedburner.com/TheHackersNews",
+    "category": "Security News"
   },
   {
-    "name": "Simon Willison's Weblog",
-    "url": "https://simonwillison.net/atom/everything/",
-    "category": "AI Insights"
+    "name": "Dark Reading",
+    "url": "https://www.darkreading.com/rss.xml",
+    "category": "Security News"
   },
   {
-    "name": "MIT Technology Review",
-    "url": "https://www.technologyreview.com/feed/",
-    "category": "AI Insights"
+    "name": "Bleeping Computer",
+    "url": "https://www.bleepingcomputer.com/feed/",
+    "category": "Security News"
   },
   {
-    "name": "The Pragmatic Engineer",
-    "url": "https://newsletter.pragmaticengineer.com/feed",
-    "category": "AI Insights"
+    "name": "The Record",
+    "url": "https://therecord.media/feed/",
+    "category": "Security News"
   },
   {
-    "name": "VentureBeat AI",
-    "url": "https://venturebeat.com/category/ai/feed/",
-    "category": "AI Insights"
+    "name": "SecurityWeek",
+    "url": "https://www.securityweek.com/feed/",
+    "category": "Security News"
   },
   {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
-    "category": "AI Insights"
+    "name": "The Register Security",
+    "url": "https://www.theregister.com/security/headlines.atom",
+    "category": "Security News"
+  },
+  {
+    "name": "Krebs on Security",
+    "url": "https://krebsonsecurity.com/feed/",
+    "category": "Analysis"
+  },
+  {
+    "name": "Schneier on Security",
+    "url": "https://www.schneier.com/feed/atom/",
+    "category": "Analysis"
+  },
+  {
+    "name": "SANS Internet Storm Center",
+    "url": "https://isc.sans.edu/rssfeed.xml",
+    "category": "Analysis"
+  },
+  {
+    "name": "OpenAI Blog",
+    "url": "https://openai.com/blog/rss.xml",
+    "category": "AI Industry"
+  },
+  {
+    "name": "CISA Advisories",
+    "url": "https://www.cisa.gov/cybersecurity-advisories/all.xml",
+    "category": "Advisories"
   }
 ]
