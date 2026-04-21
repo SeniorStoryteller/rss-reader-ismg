@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { ArticleCard } from '@/components/ArticleCard';
 import { SkeletonCard } from '@/components/SkeletonCard';
@@ -8,10 +9,16 @@ import { filterBySearch } from '@/lib/search';
 import { useFeedData } from '@/hooks/useFeedData';
 
 export default function Home() {
-  const { items, failed, loading, categories } = useFeedData();
+  const router = useRouter();
+  const { items, failed, loading, categories, sources } = useFeedData();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const displayedItems = useMemo(() => filterBySearch(items, searchQuery), [items, searchQuery]);
+  const selectedSource = typeof router.query.source === 'string' ? router.query.source : null;
+
+  const displayedItems = useMemo(() => {
+    const sourceFiltered = selectedSource ? items.filter((item) => item.source === selectedSource) : items;
+    return filterBySearch(sourceFiltered, searchQuery);
+  }, [items, searchQuery, selectedSource]);
 
   return (
     <>
@@ -28,6 +35,7 @@ export default function Home() {
 
       <Layout
         categories={categories}
+        sources={sources}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchResultCount={displayedItems.length}
@@ -52,7 +60,11 @@ export default function Home() {
           </div>
         ) : (
           <p className="py-12 text-center text-gray-500 dark:text-gray-400">
-            {searchQuery ? 'No results found.' : 'No feed items available.'}
+            {selectedSource
+              ? `No articles from "${selectedSource}".`
+              : searchQuery
+                ? 'No results found.'
+                : 'No feed items available.'}
           </p>
         )}
       </Layout>

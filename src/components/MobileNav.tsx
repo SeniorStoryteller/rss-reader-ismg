@@ -1,18 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { slugify } from '@/lib/slugify';
+import { NavLists } from './NavLists';
 
 interface MobileNavProps {
   categories: string[];
+  sources: string[];
 }
 
-export function MobileNav({ categories }: MobileNavProps) {
+export function MobileNav({ categories, sources }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const currentSlug = router.query.slug as string | undefined;
+  const currentSource = typeof router.query.source === 'string' ? router.query.source : null;
+  const [activeTab, setActiveTab] = useState<'topics' | 'sources'>(currentSource ? 'sources' : 'topics');
   const navRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    setActiveTab(currentSource ? 'sources' : 'topics');
+  }, [currentSource]);
 
   const close = useCallback(() => {
     setIsOpen(false);
@@ -96,7 +102,34 @@ export function MobileNav({ categories }: MobileNavProps) {
             className="fixed inset-y-0 left-0 z-50 w-64 bg-white p-6 shadow-lg dark:bg-gray-800"
           >
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Categories</h2>
+              <div className="flex items-center gap-2 text-sm uppercase tracking-wider">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('topics');
+                    if (currentSource) router.push('/');
+                  }}
+                  className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
+                    activeTab === 'topics'
+                      ? 'font-bold text-gray-900 dark:text-gray-100'
+                      : 'font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
+                  }`}
+                >
+                  Topics
+                </button>
+                <span className="text-gray-400">|</span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('sources')}
+                  className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
+                    activeTab === 'sources'
+                      ? 'font-bold text-gray-900 dark:text-gray-100'
+                      : 'font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
+                  }`}
+                >
+                  Sources
+                </button>
+              </div>
               <button
                 onClick={close}
                 aria-label="Close navigation menu"
@@ -107,42 +140,16 @@ export function MobileNav({ categories }: MobileNavProps) {
                 </svg>
               </button>
             </div>
-            <ul className="space-y-1">
-              <li>
-                <Link
-                  href="/"
-                  onClick={close}
-                  aria-current={!currentSlug ? 'page' : undefined}
-                  className={`block min-h-[44px] rounded-md px-3 py-2.5 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
-                    !currentSlug
-                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
-                      : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  All Feeds
-                </Link>
-              </li>
-              {categories.map((cat) => {
-                const slug = slugify(cat);
-                const isActive = currentSlug === slug;
-                return (
-                  <li key={cat}>
-                    <Link
-                      href={`/category/${slug}`}
-                      onClick={close}
-                      aria-current={isActive ? 'page' : undefined}
-                      className={`block min-h-[44px] rounded-md px-3 py-2.5 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
-                        isActive
-                          ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
-                          : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
-                      }`}
-                    >
-                      {cat}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+
+            <NavLists
+              activeTab={activeTab}
+              categories={categories}
+              sources={sources}
+              currentSlug={currentSlug}
+              currentSource={currentSource}
+              onLinkClick={close}
+              variant="mobile"
+            />
           </nav>
         </div>
       )}

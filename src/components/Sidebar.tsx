@@ -1,70 +1,74 @@
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { slugify } from '@/lib/slugify';
+import { NavLists } from './NavLists';
 
 interface SidebarProps {
   categories: string[];
+  sources: string[];
 }
 
-export function Sidebar({ categories }: SidebarProps) {
+export function Sidebar({ categories, sources }: SidebarProps) {
   const router = useRouter();
   const currentSlug = router.query.slug as string | undefined;
+  const currentSource = typeof router.query.source === 'string' ? router.query.source : null;
+  const [activeTab, setActiveTab] = useState<'topics' | 'sources'>(currentSource ? 'sources' : 'topics');
+
+  useEffect(() => {
+    setActiveTab(currentSource ? 'sources' : 'topics');
+  }, [currentSource]);
 
   return (
-    <aside className="hidden w-56 shrink-0 md:block">
+    <aside className="hidden w-56 shrink-0 self-start sticky top-6 md:block">
       <nav aria-label="Category navigation">
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-100 dark:text-gray-400">
-          Categories
-        </h2>
-        <ul className="space-y-1">
-          <li>
-            <Link
-              href="/"
-              aria-current={!currentSlug ? 'page' : undefined}
-              className={`block min-h-[44px] py-2.5 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
-                !currentSlug
-                  ? 'border-l-2 border-orange-400 pl-[10px] font-semibold text-white'
-                  : 'rounded-md px-3 font-medium text-gray-100 hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-800'
-              }`}
-            >
-              All Feeds
-            </Link>
-          </li>
-          {categories.map((cat) => {
-            const slug = slugify(cat);
-            const isActive = currentSlug === slug;
-            return (
-              <li key={cat}>
-                <Link
-                  href={`/category/${slug}`}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`block min-h-[44px] py-2.5 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
-                    isActive
-                      ? 'border-l-2 border-orange-400 pl-[10px] font-semibold text-white'
-                      : 'rounded-md px-3 font-medium text-gray-100 hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-800'
-                  }`}
-                >
-                  {cat}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
+          <button
+            type="button"
+            onClick={() => {
+              setActiveTab('topics');
+              if (currentSource) router.push('/');
+            }}
+            className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
+              activeTab === 'topics' ? 'font-bold text-white' : 'font-medium text-gray-200 hover:text-white'
+            }`}
+          >
+            Topics
+          </button>
+          <span className="text-gray-300">|</span>
+          <button
+            type="button"
+            onClick={() => setActiveTab('sources')}
+            className={`focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 ${
+              activeTab === 'sources' ? 'font-bold text-white' : 'font-medium text-gray-200 hover:text-white'
+            }`}
+          >
+            Sources
+          </button>
+        </div>
 
-        {process.env.NODE_ENV !== 'production' && (
-          <div className="mt-6">
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-100 dark:text-gray-400">
-              Admin
-            </h2>
-            <Link
-              href="/admin"
-              className="block min-h-[44px] rounded-md px-3 py-2.5 text-sm font-medium text-gray-100 hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
-            >
-              Manage Feeds
-            </Link>
-          </div>
-        )}
+        <NavLists
+          activeTab={activeTab}
+          categories={categories}
+          sources={sources}
+          currentSlug={currentSlug}
+          currentSource={currentSource}
+          variant="sidebar"
+        />
       </nav>
+
+      {process.env.NODE_ENV !== 'production' && (
+        <div className="mt-6">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-100 dark:text-gray-400">
+            Admin
+          </h2>
+          <Link
+            href="/admin"
+            className="block min-h-[44px] rounded-md px-3 py-2.5 text-sm font-medium text-gray-100 hover:bg-gray-500 dark:text-gray-300 dark:hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+          >
+            Manage Feeds
+          </Link>
+        </div>
+      )}
     </aside>
   );
 }
