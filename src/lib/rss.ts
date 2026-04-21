@@ -44,6 +44,12 @@ function extractImageUrl(item: Parser.Item & CustomItem): string | null {
   return null;
 }
 
+function safeStr(value: unknown, fallback = ''): string {
+  if (typeof value === 'string') return value;
+  if (value == null) return fallback;
+  try { return String(value); } catch { return fallback; }
+}
+
 function stripXxeVectors(xml: string): string {
   return xml
     .replace(/<!DOCTYPE[^>]*>/gi, '')
@@ -145,14 +151,14 @@ async function fetchSingleFeed(
     const cutoff = Date.now() - MAX_AGE_MS;
 
     const mapped = (feed.items || []).map((item) => ({
-      title: item.title || 'Untitled',
-      link: item.link || '',
+      title: safeStr(item.title, 'Untitled'),
+      link: safeStr(item.link),
       timestamp: parseDate(item.isoDate, item.pubDate),
-      pubDate: item.isoDate || item.pubDate || '',
-      description: item.contentSnippet || stripHtml(item.content || item.summary || ''),
+      pubDate: safeStr(item.isoDate || item.pubDate),
+      description: safeStr(item.contentSnippet) || stripHtml(safeStr(item.content || item.summary)),
       source: config.name,
       category: config.category,
-      guid: item.guid || item.link || '',
+      guid: safeStr(item.guid) || safeStr(item.link),
       imageUrl: extractImageUrl(item),
     }));
 
