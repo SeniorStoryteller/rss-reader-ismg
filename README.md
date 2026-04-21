@@ -79,6 +79,17 @@ The source name must match `item.source` exactly (visible in small text above ea
 Currently configured:
 - `"Bank Info Security"` → `Logo - Bank Info Security.png`
 
+## Item Filtering
+
+Each feed is filtered before display to keep the view fresh and prevent any single high-volume source from dominating:
+
+- **Recency window:** articles older than **14 days** are dropped. The cutoff is computed per request (`Date.now() - 14 * 24 * 60 * 60 * 1000`), so it slides forward automatically with real time — no cron job needed.
+- **Per-feed cap:** each feed contributes at most **10 most-recent items**. Prevents archive-style feeds (OpenAI returns 942 items uncapped) from drowning out lower-volume sources like Krebs.
+- **Undated items dropped:** items with no `pubDate` are excluded. For a "what's new" view, undated items can't be confirmed as recent.
+- **Title-based dedup:** after fetching, items with the same normalized title across different feeds are collapsed to one card (first source wins).
+
+Constants live at the top of `src/lib/rss.ts` (`MAX_AGE_MS`, `MAX_ITEMS_PER_FEED`) if you need to tune them.
+
 ## Caching
 
 The feeds API uses `s-maxage=300` — the CDN caches feed content for up to 5 minutes. New feeds and new articles from existing feeds will appear on the live site within 5 minutes of a push, with no manual action needed.
