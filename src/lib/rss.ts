@@ -229,6 +229,14 @@ export async function fetchAllFeeds(
       keywordSources.get(kw)!.add(item.source);
     }
   }
+
+  // Any keyword appearing in ≥60% of active sources is structural noise for this
+  // feed (e.g. "Google", "China") — auto-suppress without needing a static list.
+  const activeSources = new Set(
+    items.filter((i) => i.timestamp >= trendingCutoff).map((i) => i.source)
+  );
+  const noiseCeiling = Math.round(activeSources.size * 0.6);
+
   for (const item of deduped) {
     if (item.timestamp < trendingCutoff) {
       item.trendingScore = 0;
@@ -237,7 +245,9 @@ export async function fetchAllFeeds(
     let score = 0;
     for (const kw of extractKeywords(item.title, item.description)) {
       const count = keywordSources.get(kw)?.size ?? 0;
-      if (count > score) score = count;
+      if (count >= TRENDING_THRESHOLD && count < noiseCeiling && count > score) {
+        score = count;
+      }
     }
     item.trendingScore = score;
   }
