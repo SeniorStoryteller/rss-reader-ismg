@@ -200,16 +200,51 @@ Each stage is one session. Commit + push + merge preview→main at the end so th
 - Convert index + category pages to `getStaticProps` with `revalidate: 300`
 - No user-visible change; performance + bundle size improvement
 
-**Stage 5 — Negotiations / optional tweaks**
-- Should per-feed cap rise from 10 → 15 or 20?
-- Any Original behaviors we intentionally skipped that user wants after all?
-- OG image file rename (currently `ISMG Feed Reader - 01.png` — doesn't match new branding)
+**Stage 5 — Negotiations / optional tweaks** ✅ Complete
+- Per-feed cap: kept at 10 (user decision)
+- OG image renamed: `ISMG Feed Reader - 01.png` → `ai-cybersecurity-daily-og.png`; URL updated in `src/pages/index.tsx`
+- Sticky sidebar: already present from Stage 3 (`sticky top-6 self-start` on `<aside>`)
+- Full diff of original vs ISMG confirmed: no unintentional gaps; ISMG is actually ahead on image extraction (`data-src` fallback) and sanitization (`stripHtml`)
 
 ### How to resume in a new session
 
 1. Open this project in Claude Code Desktop: `/Users/seniorstoryteller/Claude Code Projects/RSS Reader - ISMG`
 2. Prompt: *"Read docs/PHASES.md Session 4 plan, then do Stage N."* (replace N with the next stage)
 3. For Stages 1–4 the code reference is the original project at `/Users/seniorstoryteller/Claude Code Projects/RSS Reader` — read the relevant files there, adapt patterns here, keep the "behaviors to KEEP" intact.
+
+---
+
+## Session 5 — Planned: Trending topic
+
+### Context
+
+After completing all 5 stages of the Session 4 UX port, the user asked about adding a "Trending" option under "Topics" in the sidebar. Load-time analysis: zero impact if implemented as a client-side filter over already-fetched data.
+
+### Proposed implementation: cross-source frequency
+
+**Definition:** An article is "trending" if it appears (by normalized title) in 2 or more sources.
+
+**Why this definition:**
+- Uses data already in memory — no extra fetch
+- Meaningful signal: when multiple security outlets cover the same story, it's genuinely notable
+- Dedup logic in `src/lib/rss.ts` already normalizes titles (trim + lowercase) for cross-post detection — same normalization can be reused to count occurrences before dedup
+
+**Rough implementation sketch:**
+1. Before dedup, build a frequency map: `normalizedTitle → count`
+2. After dedup, attach `trendingScore: number` to each `FeedItem`
+3. In `src/pages/index.tsx` (and category pages), add "Trending" as a pseudo-topic filter: `items.filter(i => i.trendingScore >= 2)`
+4. Add "Trending" as a top entry in the Topics list in `NavLists.tsx` (above the category list, below "All")
+
+**Threshold:** 2+ sources. With 15 feeds, expect ~5–20 trending items on any given day.
+
+**Questions to resolve before building:**
+- Minimum score threshold: 2 sources, or 3?
+- Should trending items be sorted by score descending, or by recency?
+- Should "Trending" appear in category pages too, or only on the home page?
+
+### Prompt for next session
+
+*"Read docs/PHASES.md Session 5 plan. Let's build the Trending topic filter. Before writing any code, confirm the three open questions with me."*
 
 ---
 
