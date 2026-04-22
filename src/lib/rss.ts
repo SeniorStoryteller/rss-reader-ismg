@@ -158,11 +158,11 @@ async function fetchSingleFeed(
     const cutoff = Date.now() - MAX_AGE_MS;
 
     const mapped = (feed.items || []).map((item) => ({
-      title: safeStr(item.title, 'Untitled'),
+      title: stripHtml(safeStr(item.title, 'Untitled')) || 'Untitled',
       link: safeStr(item.link),
       timestamp: parseDate(item.isoDate, item.pubDate),
       pubDate: safeStr(item.isoDate || item.pubDate),
-      description: safeStr(item.contentSnippet) || stripHtml(safeStr(item.content || item.summary)),
+      description: stripHtml(safeStr(item.contentSnippet) || safeStr(item.content || item.summary)),
       source: config.name,
       category: config.category,
       guid: safeStr(item.guid) || safeStr(item.link),

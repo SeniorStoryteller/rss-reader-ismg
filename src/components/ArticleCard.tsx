@@ -7,6 +7,7 @@ const SOURCE_LOGOS: Record<string, string> = {
   "Bank Info Security": '/Logo%20-%20Bank%20Info%20Security.png',
   "The Register Security": '/Logo%20-%20The%20Register%20Security.png',
   "Bleeping Computer": '/Logo%20-%20Bleeping%20Computer.png',
+  "CISA Advisories": '/Logo%20-%20CISA%20Advisories.png',
 };
 
 interface ArticleCardProps {
