@@ -50,6 +50,16 @@
     "category": "Security News"
   },
   {
+    "name": "Security Affairs",
+    "url": "https://securityaffairs.com/feed",
+    "category": "Security News"
+  },
+  {
+    "name": "Data Breach Today",
+    "url": "https://www.databreachtoday.com/rssFeeds.php?type=main",
+    "category": "Security News"
+  },
+  {
     "name": "Krebs on Security",
     "url": "https://krebsonsecurity.com/feed/",
     "category": "Analysis"
