@@ -144,10 +144,13 @@ async function fetchSingleFeed(
   config: FeedConfig
 ): Promise<FeedItem[]> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
+  const timeout = setTimeout(() => controller.abort(), 15000);
 
   try {
-    const response = await fetch(config.url, { signal: controller.signal });
+    const response = await fetch(config.url, {
+      signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; RSSReader/1.0; +https://rss-reader-ismg.vercel.app)' },
+    });
     if (!response.ok) {
       throw new Error(`HTTP ${response.status} ${response.statusText}`);
     }
